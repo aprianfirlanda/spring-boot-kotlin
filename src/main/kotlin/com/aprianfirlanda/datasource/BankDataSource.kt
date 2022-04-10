@@ -4,5 +4,5 @@ import com.aprianfirlanda.model.Bank
 
 interface BankDataSource {
 
-    fun getBank(): Collection<Bank>
+    fun retrieveBanks(): Collection<Bank>
 }

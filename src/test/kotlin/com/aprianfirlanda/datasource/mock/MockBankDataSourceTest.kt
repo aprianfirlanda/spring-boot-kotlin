@@ -12,7 +12,7 @@ internal class MockBankDataSourceTest {
     @Test
     fun `should provide a collection of banks`() {
         // when
-        val banks = mockBankDataSource.getBank()
+        val banks = mockBankDataSource.retrieveBanks()
 
         // then
         assertThat(banks).isNotEmpty
@@ -21,7 +21,7 @@ internal class MockBankDataSourceTest {
     @Test
     fun `should provide some mock data`() {
         // when
-        val banks = mockBankDataSource.getBank()
+        val banks = mockBankDataSource.retrieveBanks()
 
         // then
         assertThat(banks).allMatch { it.accountNumber.isNotBlank() }
