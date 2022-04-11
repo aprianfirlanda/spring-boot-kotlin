@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 
 @SpringBootTest
@@ -103,6 +104,16 @@ internal class BankControllerTest @Autowired constructor(
                     jsonPath("$.trust") { value(newBank.trust) }
                     jsonPath("$.transactionFee") { value(newBank.transactionFee) }
                 }
+
+            mockMvc.get("$baseUrl/${newBank.accountNumber}")
+                .andDo { print() }
+                .andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.accountNumber") { value(newBank.accountNumber) }
+                    jsonPath("$.trust") { value(newBank.trust) }
+                    jsonPath("$.transactionFee") { value(newBank.transactionFee) }
+                }
         }
 
         @Test
@@ -123,6 +134,45 @@ internal class BankControllerTest @Autowired constructor(
                     status { isBadRequest() }
                 }
 
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH /api/bank")
+    @TestInstance(Lifecycle.PER_CLASS)
+    inner class PatchExistingBank {
+
+        @Test
+        fun `should update an existing bank`() {
+            // given
+            val updateBank = Bank("123123", 10.0, 1)
+
+            // when
+            val performPatch = mockMvc.patch(baseUrl) {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(updateBank)
+            }
+
+            // then
+            performPatch
+                .andDo { print() }
+                .andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.accountNumber") { value(updateBank.accountNumber) }
+                    jsonPath("$.trust") { value(updateBank.trust) }
+                    jsonPath("$.transactionFee") { value(updateBank.transactionFee) }
+                }
+
+            mockMvc.get("$baseUrl/${updateBank.accountNumber}")
+                .andDo { print() }
+                .andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.accountNumber") { value(updateBank.accountNumber) }
+                    jsonPath("$.trust") { value(updateBank.trust) }
+                    jsonPath("$.transactionFee") { value(updateBank.transactionFee) }
+                }
         }
     }
 }
