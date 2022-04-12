@@ -30,4 +30,8 @@ class BankController(private val bankService: BankService) {
 
     @PatchMapping
     fun updateBank(@RequestBody bank: Bank): Bank = bankService.updateBank(bank)
+
+    @DeleteMapping("/{accountNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteBank(@PathVariable accountNumber: String): Unit = bankService.deleteBank(accountNumber)
 }
